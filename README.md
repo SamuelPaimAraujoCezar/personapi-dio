@@ -2,7 +2,7 @@
 
 Requisitos do projeto:
 
-* Java 11 ou versões superiores.
+* Java 15 ou versões superiores.
 * Maven 3.6.3 ou versões superiores.
 * Intellj IDEA Community Edition ou outra IDE.
 * Controle de versão GIT instalado na sua máquina.
