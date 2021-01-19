@@ -1,5 +1,6 @@
 package one.digitalinnovation.personapi.service;
 
+import lombok.AllArgsConstructor;
 import one.digitalinnovation.personapi.dto.request.PersonDTO;
 import one.digitalinnovation.personapi.dto.request.PhoneDTO;
 import one.digitalinnovation.personapi.dto.response.MessageResponseDTO;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PersonService {
 
     private PersonRepository personRepository;
@@ -25,11 +27,6 @@ public class PersonService {
     private final PersonMapper personMapper = PersonMapper.INSTANCE;
 
     private final PhoneMapper phoneMapper = PhoneMapper.INSTANCE;
-
-    @Autowired
-    public PersonService(PersonRepository personRepository){
-        this.personRepository = personRepository;
-    }
 
     public List<PersonDTO> listAll() {
         List<Person> allPeople = personRepository.findAll();
