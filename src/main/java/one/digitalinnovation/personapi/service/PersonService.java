@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import one.digitalinnovation.personapi.dto.request.PersonDTO;
 import one.digitalinnovation.personapi.dto.response.MessageResponseDTO;
 import one.digitalinnovation.personapi.entity.Person;
-import one.digitalinnovation.personapi.entity.Phone;
 import one.digitalinnovation.personapi.exception.PersonNotFoundException;
 import one.digitalinnovation.personapi.mapper.PersonMapper;
-import one.digitalinnovation.personapi.mapper.PhoneMapper;
 import one.digitalinnovation.personapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +21,6 @@ public class PersonService {
     private PersonRepository personRepository;
 
     private final PersonMapper personMapper = PersonMapper.INSTANCE;
-
-    private final PhoneMapper phoneMapper = PhoneMapper.INSTANCE;
 
     public List<PersonDTO> listAll() {
         List<Person> allPeople = personRepository.findAll();
@@ -47,8 +43,8 @@ public class PersonService {
     }
 
     public MessageResponseDTO updatePerson(Long id, PersonDTO personDTO) throws PersonNotFoundException {
-        Person person = verifyIfExists(id);
-        personDTO = adaptToId(id, personDTO, person);
+        verifyIfExists(id);
+        personDTO.setId(id);
 
         Person personToUpdate = personMapper.toModel(personDTO);
 
@@ -66,15 +62,6 @@ public class PersonService {
         return MessageResponseDTO.builder()
                 .message(message + id)
                 .build();
-    }
-
-    private PersonDTO adaptToId(Long id, PersonDTO personDTO, Person person) {
-        List<Phone> phone = person.getPhones();
-
-        personDTO.setId(id);
-        personDTO.setPhones(phoneMapper.toDTO(phone));
-
-        return personDTO;
     }
 
     private Person verifyIfExists(Long id) throws PersonNotFoundException {
