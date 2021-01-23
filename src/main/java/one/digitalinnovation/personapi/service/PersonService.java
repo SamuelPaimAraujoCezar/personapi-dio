@@ -2,8 +2,10 @@ package one.digitalinnovation.personapi.service;
 
 import lombok.AllArgsConstructor;
 import one.digitalinnovation.personapi.dto.request.PersonDTO;
+import one.digitalinnovation.personapi.dto.request.PhoneDTO;
 import one.digitalinnovation.personapi.dto.response.MessageResponseDTO;
 import one.digitalinnovation.personapi.entity.Person;
+import one.digitalinnovation.personapi.entity.Phone;
 import one.digitalinnovation.personapi.exception.PersonNotFoundException;
 import one.digitalinnovation.personapi.mapper.PersonMapper;
 import one.digitalinnovation.personapi.repository.PersonRepository;
@@ -43,8 +45,8 @@ public class PersonService {
     }
 
     public MessageResponseDTO updatePerson(Long id, PersonDTO personDTO) throws PersonNotFoundException {
-        verifyIfExists(id);
-        personDTO.setId(id);
+        Person person = verifyIfExists(id);
+        personDTO = adaptToId(id, personDTO, person);
 
         Person personToUpdate = personMapper.toModel(personDTO);
 
@@ -62,6 +64,24 @@ public class PersonService {
         return MessageResponseDTO.builder()
                 .message(message + id)
                 .build();
+    }
+
+    private PersonDTO adaptToId(Long id, PersonDTO personDTO, Person person) {
+        List<Phone> phones = person.getPhones();
+        List<PhoneDTO> phonesDTO = personDTO.getPhones();
+
+        for (int i = 0; i < phonesDTO.size(); i++) {
+            if (!phones.isEmpty()) {
+                phonesDTO.get(i).setId(phones.get(0).getId());
+                phones.remove(0);
+            }
+        }
+
+        personDTO.setId(id);
+        personDTO.setPhones(phonesDTO);
+
+        return personDTO;
+
     }
 
     private Person verifyIfExists(Long id) throws PersonNotFoundException {
